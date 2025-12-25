@@ -41,3 +41,6 @@ Generated during training (see `artifacts/`):
 ## Best checkpoint
 If `--save_best` was used:
 - `artifacts/best.pt` stores the best epoch under the chosen selection metric (e.g., lowest test total).
+
+
+### For sample outputs refer to example folder
