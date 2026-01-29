@@ -3,12 +3,18 @@ import csv
 import argparse
 import math
 
+import json
+import platform
+import subprocess
+import sys
+from datetime import datetime, timezone
+
 import torch
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 
-from model import ConvVAE, vae_loss_bce_logits
-from viz import save_image_grid, save_recon_pairs_grid, save_latent_interpolation
+from .model import ConvVAE, vae_loss_bce_logits
+from .viz import save_image_grid, save_recon_pairs_grid, save_latent_interpolation
 
 
 def set_seed(seed: int):
@@ -101,6 +107,34 @@ def save_recons_and_samples(model, x_batch, device, out_dir, epoch, z_dim):
         title="Samples (z ~ N(0,I))"
     )
 
+def _get_git_commit() -> str | None:
+    try:
+        out = subprocess.check_output(
+            ["git", "rev-parse", "--short", "HEAD"],
+            stderr=subprocess.DEVNULL,
+            text=True,
+        ).strip()
+        return out if out else None
+    except Exception:
+        return None
+
+
+def write_run_meta(args, device, out_dir: str) -> None:
+    meta = {
+        "timestamp_utc": datetime.now(timezone.utc).isoformat(),
+        "git_commit": _get_git_commit(),
+        "python_version": sys.version.split()[0],
+        "platform": platform.platform(),
+        "torch_version": getattr(torch, "__version__", None),
+        "cuda_available": torch.cuda.is_available(),
+        "device": str(device),
+        "args": vars(args),
+    }
+
+    path = os.path.join(out_dir, "run_meta.json")
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(meta, f, indent=2, sort_keys=True)
+
 
 def main():
     ap = argparse.ArgumentParser()
@@ -152,6 +186,7 @@ def main():
     set_seed(args.seed)
     device = get_device(args.device)
     os.makedirs(args.out_dir, exist_ok=True)
+    write_run_meta(args=args, device=device, out_dir=args.out_dir)
 
     # Prepare saving paths / state
     best_path = args.best_path if args.best_path else os.path.join(args.out_dir, "best.pt")

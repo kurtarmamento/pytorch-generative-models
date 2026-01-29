@@ -69,7 +69,7 @@ pip install torch torchvision matplotlib tqdm
 #### NVIDIA (CUDA)
 Install PyTorch/torchvision using the official PyTorch selector for your CUDA version, then:
 ```powershell
-pip install matplotlib tqdm
+pip install torch matplotlib tqdm
 ```
 
 #### AMD on Windows (DirectML)
