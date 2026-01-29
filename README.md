@@ -63,18 +63,18 @@ python -m pip install --upgrade pip
 
 #### CPU-only (portable baseline)
 ```powershell
-pip install torch torchvision matplotlib tqdm
+pip install -r ./requirements/requirements-cpu.txt
 ```
 
 #### NVIDIA (CUDA)
 Install PyTorch/torchvision using the official PyTorch selector for your CUDA version, then:
 ```powershell
-pip install torch matplotlib tqdm
+pip install -r ./requirements/requirements-nvidia-cu118.txt
 ```
 
 #### AMD on Windows (DirectML)
 ```powershell
-pip install torch-directml torchvision matplotlib tqdm
+pip install -r ./requirements/requirements-directml.txt
 ```
 
 Notes:
@@ -130,6 +130,12 @@ During training, the script writes:
 - `total = recon + beta * kl`
 
 ## Results
-![Sample Epoch](examples/samples_epoch199.png)
-![Sample Recon](examples/recon_epoch199.png)
-![Sample Interp](examples/interp_epoch199.png)
+
+> These example outputs were generated using the VAE on Fashion-MNIST training pipeline.
+
+**VAE Samples**
+![Sample Epoch](examples/vae_samples.png)
+**VAE Reconstructions**
+![Sample Recon](examples/vae_recon.png)
+**VAE Interpolation**
+![Sample Interp](examples/vae_interp.png)
